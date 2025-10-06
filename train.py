@@ -1,7 +1,13 @@
 import argparse
 
 import torch
+import os
 
+if __name__ == '__main__':
+    import multiprocessing
+    multiprocessing.set_start_method('spawn', force=True)
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+    
 from trainer import build_trainer
 from utils import (  # noqa
     collect_env_info,
@@ -103,7 +109,15 @@ def main(args):
     if cfg.SEED >= 0:
         set_random_seed(cfg.SEED)
 
-    torch.cuda.set_device(cfg.GPU)
+    if torch.cuda.is_available() and cfg.GPU >= 0:
+        device = torch.device(f'cuda:{cfg.GPU}')
+        torch.cuda.set_device(cfg.GPU)
+        print(f"Using GPU: {torch.cuda.get_device_name(cfg.GPU)}")
+    else:
+        device = torch.device('cpu')
+        print("WARNING: CUDA not available or GPU < 0, using CPU")
+        if cfg.GPU >= 0:
+            print("You specified --gpu but CUDA is not available!")
 
     setup_logger(cfg.OUTPUT_DIR)
 
@@ -114,6 +128,12 @@ def main(args):
     # print("** System info **\n{}\n".format(collect_env_info()))
 
     trainer = build_trainer(cfg)
+    
+    print(f"\nTrainer device: {trainer.device}")
+    if hasattr(trainer, 'model'):
+        model_device = next(trainer.model.parameters()).device
+        print(f"Model device: {model_device}")
+        
     if args.model in zero_shot_models:
         trainer.test()
     else:

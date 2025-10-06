@@ -20,7 +20,13 @@ class Trainer:
         self.cfg = cfg
         self.max_epoch = cfg.OPTIM.MAX_EPOCH
         self.output_dir = cfg.OUTPUT_DIR
-        self.device = torch.cuda.current_device()
+        
+        if torch.cuda.is_available() and cfg.GPU >= 0:
+            self.device = torch.device(f'cuda:{cfg.GPU}')
+            print(f"Trainer initialized on GPU {cfg.GPU}: {torch.cuda.get_device_name(cfg.GPU)}")
+        else:
+            self.device = torch.device('cpu')
+            print("Trainer initialized on CPU")
 
         self._writer = None
 
@@ -190,15 +196,43 @@ class Trainer:
         else:
             raise NotImplementedError
 
-        print("Evaluate on the {} Set".format(split))
+        print(f"\n{'='*60}")
+        print(f"Evaluate on the {torch.split} Set")
+        print(f"Device: {self.device}")
+        print(f"Total batches: {len(data_loader)}")
+        print(f"{'='*60}\n")
 
-        for _, batch_data in enumerate(data_loader):
+        from tqdm import tqdm
+        import time
+        
+        start_time = time.time()
+        
+        for batch_idx, batch_data in enumerate(tqdm(data_loader, desc="Testing", ncols=80)):
             input_data, target, domain, camids = self.parse_batch_test(batch_data)
+            
+            if batch_idx == 0:
+                print(f"\nFirst batch input device: {input_data.device}")
+                print(f"First batch input shape: {input_data.shape}")
+                batch_start = time.time()
+            
             output = self.model_inference(input_data, domain)
+            
+            if batch_idx == 0:
+                batch_time = time.time() - batch_start
+                print(f"First batch inference time: {batch_time:.3f}s")
+                print(f"Estimated total time: {batch_time * len(data_loader):.1f}s\n")
+            
             self.evaluator.process((output.cpu(), target.cpu().tolist(), camids, domain))
+        
+        elapsed_time = time.time() - start_time
+        print(f"\n{'='*60}")
+        print(f"Total inference time: {elapsed_time:.2f}s")
+        print(f"Average time per batch: {elapsed_time/len(data_loader):.3f}s")
+        print(f"Images per second: {len(data_loader.dataset)/elapsed_time:.1f}")
+        print(f"{'='*60}\n")
+        
         results = self.evaluator.evaluate()
-
-        return results
+        return results              
 
     def parse_batch_train(self, batch_data):
         image = batch_data["imgs"].to(self.device)
