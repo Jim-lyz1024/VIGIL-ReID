@@ -92,6 +92,10 @@ def build_data_loader(
 class DataManager:
     def __init__(self, cfg):
         self.datasets = build_dataset(cfg)    # creates a list of datasets
+        
+        if len(self.datasets) == 1:
+            self.dataset = self.datasets[0]
+            
         self.source_domains = cfg.DATASET.SOURCE_DOMAINS if hasattr(cfg.DATASET, 'SOURCE_DOMAINS') else []
         self.target_domains = cfg.DATASET.TARGET_DOMAINS if hasattr(cfg.DATASET, 'TARGET_DOMAINS') else []
 
@@ -131,6 +135,14 @@ class DataManager:
         )
       
         self.len_query = len(self.query_data)
+        
+    @property
+    def class_names(self):
+        all_class_names = []
+        for dataset in self.datasets:
+            train_aids = set([datum.aid for datum in dataset.train_data])
+            all_class_names.extend(list(train_aids))
+        return sorted(list(set(all_class_names)))
 
     @property
     def num_classes(self):

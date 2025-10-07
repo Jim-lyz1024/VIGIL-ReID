@@ -10,8 +10,8 @@ from utils import PROMPT_TEMPLATES
 @MODEL_REGISTRY.register()
 class CLIPZeroShot(Trainer):
     def build_model(self):
-        class_names = self.data_manager.dataset.class_names
-        domain_names = self.data_manager.dataset.source_domains
+        class_names = self.data_manager.class_names
+        domain_names = self.data_manager.source_domains
 
 
         self.clip_model, _ = clip.load(

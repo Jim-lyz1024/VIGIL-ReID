@@ -1,7 +1,7 @@
 DATALOADER:
   TRAIN:
     BATCH_SIZE: 8
-    NUM_INSTANCES: 2
+    NUM_INSTANCES: 8
     SAMPLER: "RandomIdentitySampler"
   TEST:
     BATCH_SIZE: 8

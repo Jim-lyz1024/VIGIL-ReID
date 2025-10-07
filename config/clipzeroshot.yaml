@@ -4,8 +4,8 @@ DATALOADER:
     NUM_INSTANCES: 4
     SAMPLER: "RandomIdentitySampler"
   TEST:
-    BATCH_SIZE: 64
-  NUM_WORKERS: 8
+    BATCH_SIZE: 32
+  NUM_WORKERS: 2
 
 INPUT:
   SIZE: (224, 224)
