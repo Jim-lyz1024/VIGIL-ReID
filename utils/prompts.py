@@ -4,5 +4,8 @@ PROMPT_TEMPLATES = {
     "Stoat": "a picture of a {}.",
     "Cattle": "a picture of a {}.",
     "Dog": "a picture of a {}.",
+    "Lion": "a picture of a {}.",
     "MultiReID": "a picture of a {}.",
+    
+    "AmvrakikosTurtles": "a picture of a {}.",
 }
