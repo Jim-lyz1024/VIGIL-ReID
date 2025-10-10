@@ -9,4 +9,5 @@ from .nyala import Nyala  # noqa
 from .dog import Dog  # noqa
 from .seaStar import SeaStar  # noqa
 
-from .amvrakikos_turtles import AmvrakikosTurtles
+from .amvrakikos_turtles import AmvrakikosTurtles # noqa
+from .aau_zebrafish import AAUZebraFish # noqa

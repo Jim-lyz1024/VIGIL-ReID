@@ -107,7 +107,9 @@ def verify_renaming(base_dir):
 
 if __name__ == "__main__":
     # Set base directory
-    base_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\AmvrakikosTurtles\IDs"
+    ############# Change here to specify new dataset #############
+    base_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\AAUZebraFish\IDs"
+    #############
     
     print("=" * 80)
     print("Turtle Image Renaming Script")

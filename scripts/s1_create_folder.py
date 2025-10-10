@@ -1,9 +1,9 @@
 import os
 
 # Define the root directory and the range of folder names
-root_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\AmvrakikosTurtles"
+root_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\AAUZebraFish"
 start_number = 0
-end_number = 50
+end_number = 5
 
 # Create folders
 for i in range(start_number, end_number + 1):

@@ -8,4 +8,5 @@ PROMPT_TEMPLATES = {
     "MultiReID": "a picture of a {}.",
     
     "AmvrakikosTurtles": "a picture of a {}.",
+    "AAUZebraFish": "a picture of a {}."
 }
