@@ -21,8 +21,9 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
         seed: Random seed for reproducibility
     
     Strategy:
+        - IDs with only 1 image -> automatically go to train
         - Calculate target image counts based on ratios
-        - Select IDs for train until reaching ~60% of total images
+        - Select remaining IDs for train until reaching ~60% of total images
         - Use remaining IDs for query/gallery (same IDs, split images)
         - All images are used, no waste
     """
@@ -47,8 +48,10 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
         print("Error: No ID folders found!")
         return
     
-    # Count images for each ID
+    # Count images for each ID and separate single-image IDs
     id_info = []
+    single_image_ids = []
+    multi_image_ids = []
     total_images = 0
     
     for folder in id_folders:
@@ -57,17 +60,25 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
                             if f.suffix.upper() in ['.JPG', '.JPEG', '.PNG']])
         image_count = len(image_files)
         total_images += image_count
-        id_info.append({
+        
+        info = {
             'id': turtle_id,
             'folder': folder,
             'images': image_files,
             'count': image_count
-        })
+        }
+        
+        if image_count == 1:
+            single_image_ids.append(info)
+        else:
+            multi_image_ids.append(info)
     
     print("=" * 80)
     print("ReID Dataset Splitting Script (By Image Count)")
     print("=" * 80)
     print(f"Total IDs found: {len(id_folders)}")
+    print(f"  - Single-image IDs: {len(single_image_ids)} (will go to train)")
+    print(f"  - Multi-image IDs: {len(multi_image_ids)}")
     print(f"Total images: {total_images}")
     print(f"\nTarget distribution:")
     print(f"  Train: {train_ratio:.1%} = {int(total_images * train_ratio)} images")
@@ -81,15 +92,20 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
     target_query = int(total_images * query_ratio)
     target_gallery = int(total_images * gallery_ratio)
     
-    # Shuffle IDs for random selection
-    random.shuffle(id_info)
+    # Start with single-image IDs in training
+    train_ids = single_image_ids.copy()
+    train_image_count = sum(info['count'] for info in single_image_ids)
     
-    # Select IDs for training until we reach ~60% of images
-    train_ids = []
-    train_image_count = 0
+    print(f"\nSingle-image IDs automatically assigned to train:")
+    print(f"  Count: {len(single_image_ids)} IDs, {train_image_count} images")
+    
+    # Shuffle multi-image IDs for random selection
+    random.shuffle(multi_image_ids)
+    
+    # Select additional IDs for training until we reach ~60% of images
     remaining_ids = []
     
-    for info in id_info:
+    for info in multi_image_ids:
         if train_image_count < target_train:
             train_ids.append(info)
             train_image_count += info['count']
@@ -97,26 +113,36 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
             remaining_ids.append(info)
     
     # If we went over, adjust by moving last ID to remaining if beneficial
-    if train_image_count > target_train and len(train_ids) > 1:
+    if train_image_count > target_train and len(train_ids) > len(single_image_ids) + 1:
         last_id = train_ids[-1]
-        overshoot = train_image_count - target_train
-        # If overshoot is significant, move last ID to remaining
-        if overshoot > last_id['count'] * 0.5:
-            train_ids.pop()
-            remaining_ids.insert(0, last_id)
-            train_image_count -= last_id['count']
+        # Only consider moving if it's not a single-image ID
+        if last_id['count'] > 1:
+            overshoot = train_image_count - target_train
+            # If overshoot is significant, move last ID to remaining
+            if overshoot > last_id['count'] * 0.5:
+                train_ids.pop()
+                remaining_ids.insert(0, last_id)
+                train_image_count -= last_id['count']
     
     # Calculate images available for query/gallery
     test_image_count = total_images - train_image_count
     
     print(f"\nActual ID split:")
     print(f"  Train IDs: {len(train_ids)} (total images: {train_image_count})")
+    print(f"    - Single-image: {len(single_image_ids)} IDs")
+    print(f"    - Multi-image: {len(train_ids) - len(single_image_ids)} IDs")
     print(f"  Query/Gallery IDs: {len(remaining_ids)} (total images: {test_image_count})")
     print("-" * 80)
     
+    # Validate: remaining_ids should all have multiple images
+    single_in_test = [info for info in remaining_ids if info['count'] == 1]
+    if single_in_test:
+        print(f"\nWARNING: Found {len(single_in_test)} single-image IDs in query/gallery!")
+        print(f"  IDs: {[info['id'] for info in single_in_test]}")
+    
     # Statistics
     stats = {
-        'train': {'ids': set(), 'images': 0},
+        'train': {'ids': set(), 'images': 0, 'single_image_ids': 0},
         'query': {'ids': set(), 'images': 0},
         'gallery': {'ids': set(), 'images': 0}
     }
@@ -126,6 +152,8 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
     for info in train_ids:
         turtle_id = info['id']
         stats['train']['ids'].add(turtle_id)
+        if info['count'] == 1:
+            stats['train']['single_image_ids'] += 1
         
         # Copy all images to train directory
         for img_file in info['images']:
@@ -133,7 +161,8 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
             shutil.copy2(img_file, dst)
             stats['train']['images'] += 1
         
-        print(f"  ID {turtle_id}: {info['count']} images -> train")
+        single_marker = " (single)" if info['count'] == 1 else ""
+        print(f"  ID {turtle_id}: {info['count']} images -> train{single_marker}")
     
     # Process query/gallery IDs - split images between query and gallery
     print(f"\n[2/3] Processing Query/Gallery IDs...")
@@ -157,7 +186,11 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
         
         total = len(images)
         # Split images between query and gallery
+        # Ensure at least 1 image in each set
         num_query = max(1, int(total * query_test_ratio))
+        # Ensure gallery also gets at least 1 image if total >= 2
+        if total >= 2 and num_query >= total:
+            num_query = total - 1
         
         query_images = images[:num_query]
         gallery_images = images[num_query:]
@@ -175,7 +208,7 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
             stats['gallery']['images'] += 1
         
         print(f"  ID {turtle_id}: {len(query_images)} -> query, "
-              f"{len(gallery_images)} -- gallery (total: {total})")
+              f"{len(gallery_images)} -> gallery (total: {total})")
     
     # Print final statistics
     print("\n" + "=" * 80)
@@ -184,6 +217,8 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
     
     print(f"\nTrain Set:")
     print(f"  IDs: {len(stats['train']['ids'])}")
+    print(f"    - Single-image IDs: {stats['train']['single_image_ids']}")
+    print(f"    - Multi-image IDs: {len(stats['train']['ids']) - stats['train']['single_image_ids']}")
     print(f"  Images: {stats['train']['images']} ({stats['train']['images']/total_images:.1%})")
     print(f"  ID list: {sorted(stats['train']['ids'])}")
     
@@ -235,11 +270,74 @@ def split_dataset_by_image_count(ids_dir, train_dir, query_dir, gallery_dir,
     print("=" * 80)
 
 
+def verify_split(train_dir, query_dir, gallery_dir):
+    """
+    Verify the dataset split results
+    """
+    train_path = Path(train_dir)
+    query_path = Path(query_dir)
+    gallery_path = Path(gallery_dir)
+    
+    print("\n" + "=" * 80)
+    print("Verification Report")
+    print("=" * 80)
+    
+    # Extract IDs from filenames
+    def get_ids_from_dir(directory):
+        ids = set()
+        images = list(directory.glob('*.JPG')) + list(directory.glob('*.jpg')) + \
+                 list(directory.glob('*.JPEG')) + list(directory.glob('*.jpeg')) + \
+                 list(directory.glob('*.PNG')) + list(directory.glob('*.png'))
+        
+        for img in images:
+            # Extract ID from filename (format: id_-1_index_original.JPG)
+            parts = img.name.split('_')
+            if parts:
+                try:
+                    turtle_id = int(parts[0])
+                    ids.add(turtle_id)
+                except ValueError:
+                    pass
+        return ids, len(images)
+    
+    train_ids, train_count = get_ids_from_dir(train_path)
+    query_ids, query_count = get_ids_from_dir(query_path)
+    gallery_ids, gallery_count = get_ids_from_dir(gallery_path)
+    
+    total_images = train_count + query_count + gallery_count
+    
+    print(f"\nDirectory Contents:")
+    print(f"  Train: {train_count} images ({train_count/total_images:.1%}), {len(train_ids)} IDs")
+    print(f"  Query: {query_count} images ({query_count/total_images:.1%}), {len(query_ids)} IDs")
+    print(f"  Gallery: {gallery_count} images ({gallery_count/total_images:.1%}), {len(gallery_ids)} IDs")
+    print(f"  Total: {total_images} images")
+    
+    overlap_train_query = train_ids.intersection(query_ids)
+    overlap_train_gallery = train_ids.intersection(gallery_ids)
+    
+    print(f"\nValidation Checks:")
+    if overlap_train_query:
+        print(f"   Train/Query overlap: {overlap_train_query}")
+    else:
+        print(f"   No Train/Query overlap")
+    
+    if overlap_train_gallery:
+        print(f"   Train/Gallery overlap: {overlap_train_gallery}")
+    else:
+        print(f"   No Train/Gallery overlap")
+    
+    if query_ids == gallery_ids:
+        print(f"   Query and Gallery share same IDs")
+    else:
+        print(f"   Query and Gallery have different IDs")
+    
+    print("=" * 80)
+
+
 if __name__ == "__main__":
     # Configuration
     ############# Change here to specify new dataset #############
-    # base_dir = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\CatIndividualImages"
-    base_dir = r"F:\archive\data\Chicks4FreeID"
+    base_dir = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\BelugaID"
     ##########################
     ids_directory = os.path.join(base_dir, "IDs")
     train_directory = os.path.join(base_dir, "train")
@@ -271,4 +369,5 @@ if __name__ == "__main__":
             seed=42
         )
         
-
+        # Verify the split
+    verify_split(train_directory, query_directory, gallery_directory)

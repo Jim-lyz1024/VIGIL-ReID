@@ -10,7 +10,7 @@ from datetime import datetime
 # Training configuration
 GPU = 0  # GPU device ID
 SEED = 42  # Random seed
-ROOT = "./data/"  # Data root directory
+ROOT = "F:/archive/data"  # Data root directory
 OUTPUT_DIR = None  # If None, auto-generate based on dataset and model
 
 # Advanced options (optional)
@@ -29,11 +29,18 @@ ADDITIONAL_ARGS = []  # Add any additional command line arguments here
 # CONFIG_FILE = "config/clipzeroshot.yaml"
 
 # # AAUZebraFish with SIGLIPZeroShot
-DATASET = "AAUZebraFish"
-SOURCE_DOMAINS = ["AAUZebraFish"]
-TARGET_DOMAINS = ["AAUZebraFish"]
-MODEL = "SIGLIPZeroShot"
-CONFIG_FILE = "config/siglipzeroshot.yaml"
+# DATASET = "AAUZebraFish"
+# SOURCE_DOMAINS = ["AAUZebraFish"]
+# TARGET_DOMAINS = ["AAUZebraFish"]
+# MODEL = "SIGLIPZeroShot"
+# CONFIG_FILE = "config/siglipzeroshot.yaml"
+
+# CatIndividualImages with SIGLIPZeroShot 
+DATASET = "Chicks4FreeID"
+SOURCE_DOMAINS = ["Chicks4FreeID"]
+TARGET_DOMAINS = ["Chicks4FreeID"]
+MODEL = "CLIPZeroShot"
+CONFIG_FILE = "config/clipzeroshot.yaml"
 
 # # AmvrakikosTurtles with CLIPZeroShot
 # DATASET = "AmvrakikosTurtles"

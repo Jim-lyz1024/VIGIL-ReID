@@ -108,7 +108,8 @@ def verify_renaming(base_dir):
 if __name__ == "__main__":
     # Set base directory
     ############# Change here to specify new dataset #############
-    base_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\AAUZebraFish\IDs"
+    # base_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\BirdIndividualID\IDs"
+    base_directory = r"F:\archive\data\Chicks4FreeID\IDs"
     #############
     
     print("=" * 80)

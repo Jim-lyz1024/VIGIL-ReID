@@ -125,7 +125,7 @@ def list_available_species(metadata_path):
 
 if __name__ == "__main__":
     # Configuration
-    metadata_path = "F:/archive/metadata.csv"
+    metadata_path = "F:/archive/metadata_new.csv"
     base_image_dir = "F:/archive"  # Base directory containing images folder
     output_dir = "F:/archive/organized_by_identity"  # Output directory
     
@@ -140,7 +140,8 @@ if __name__ == "__main__":
     # Option 2: Process specific species
     # ==========================================
     # Specify target species (can be a list or a single string)
-    target_species = ['AAUZebraFish']  # Process only AAUZebraFish
+    # target_species = ['AAUZebraFish']  # Process only AAUZebraFish
+    target_species = ['Chicks4FreeID']  # Process only Chicks4FreeID
     # target_species = ['AAUZebraFish', 'AerialCattle2017']  # Process multiple species
     # target_species = None  # Process all species
     

@@ -8,5 +8,11 @@ PROMPT_TEMPLATES = {
     "MultiReID": "a picture of a {}.",
     
     "AmvrakikosTurtles": "a picture of a {}.",
-    "AAUZebraFish": "a picture of a {}."
+    "AAUZebraFish": "a picture of a {}.",
+    "AerialCattle2017": "a picture of a {}.",
+    "BelugaID": "a picture of a {}.",
+    "BirdIndividualID": "a picture of a {}.",
+    "CatIndividualImages": "a picture of a {}.",
+    "Chicks4FreeID": "a picture of a {}.",
+    
 }
