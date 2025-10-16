@@ -8,23 +8,23 @@ from utils.tools import listdir_nonhidden
 
 
 @DATASET_REGISTRY.register()
-class Nyala(DatasetBase):
+class CZoo(DatasetBase):
     """
-    Nyala
-    Reference: N. Dlamini and T. L. v. Zyl, "Automated Identification of Individuals in Wildlife Population Using Siamese Neural Networks," 
-                2020 7th International Conference on Soft Computing & Machine Intelligence (ISCMI), Stockholm, Sweden, 2020, pp. 224-228, doi: 10.1109/ISCMI51676.2020.9311574.
+    CZoo Dataset
+
+    Reference:
+    [Add your reference paper here if available]
     
     Dataset statistics:
-        - images: 1213 (train) + 375 (gallery) + 354 (query)
-        - identities: 179 (train) + 58 (gallery) + 58s (query)
+        - images: 2763 (train) + 698 (query) + 1201 (gallery)
+        - identities: 41 (train) + 30 (query) + 29 (gallery)
     """
-    def __init__(self, cfg, domain_label, verbose = True):
-        # self._dataset_dir = "Nyala"
-        self._dataset_dir = "NyalaData"
+    def __init__(self, cfg, domain_label, verbose=True):
+        self._dataset_dir = "CZoo"
         root = cfg.DATASET.ROOT
         self._dataset_path = os.path.join(root, self._dataset_dir)
         print("dataset path: ", self._dataset_path)
-        self._domain = "nyala" 
+        self._domain = "CZoo"
         self.domain_label = domain_label
 
         self.train_dir = os.path.join(self._dataset_path, "train")
@@ -32,16 +32,16 @@ class Nyala(DatasetBase):
         self.query_dir = os.path.join(self._dataset_path, "query")
         self._check_before_run()
 
-        train_data = self.read_data(data_dir = self.train_dir, relabel = False)
-        gallery_data = self.read_data(data_dir = self.gallery_dir, relabel = False)
-        query_data = self.read_data(data_dir = self.query_dir, relabel = False)
+        train_data = self.read_data(data_dir=self.train_dir, relabel=False)
+        gallery_data = self.read_data(data_dir=self.gallery_dir, relabel=False)
+        query_data = self.read_data(data_dir=self.query_dir, relabel=False)
         
         super().__init__(
-            dataset_dir = self._dataset_path, 
-            train_data = train_data, 
-            gallery_data = gallery_data, 
-            query_data = query_data,
-            domain = self._domain 
+            dataset_dir=self._dataset_path, 
+            train_data=train_data, 
+            gallery_data=gallery_data, 
+            query_data=query_data,
+            domain=self._domain
         )
 
         if verbose:
@@ -63,9 +63,9 @@ class Nyala(DatasetBase):
         if not os.path.exists(self.query_dir):
             raise RuntimeError("'{}' is not available".format(self.query_dir))
     
-    def read_data(self, data_dir, relabel = False):
+    def read_data(self, data_dir, relabel=False):
         def _load_data_from_directory(dir_path):
-            files_list = listdir_nonhidden(path = dir_path)
+            files_list = listdir_nonhidden(path=dir_path)
             image_paths = []
             for file in files_list:
                 if file.lower().endswith(('.jpg', '.jpeg', '.png')):
@@ -82,7 +82,15 @@ class Nyala(DatasetBase):
         for img_p in data_paths:
             image_name, ext = os.path.splitext(os.path.basename(img_p))
             components_list = image_name.split("_")
-            aid, camid = int(components_list[0]), components_list[1]
+            
+            try:
+                aid = int(components_list[0])
+                # Camera ID is the second component
+                camid = components_list[1]
+            except (IndexError, ValueError) as e:
+                print(f"Warning: Skipping file with invalid format: {image_name}")
+                continue
+                
             aid_container.add(aid)
             camid_container.add(camid)
             if aid not in aid2label:
@@ -93,13 +101,12 @@ class Nyala(DatasetBase):
                 aid = aid2label[aid]
             
             img_datum = Datum(
-                img_path = img_p, 
-                aid = aid, 
-                camid = camid, 
-                viewid = -1,
-                domain_label = self.domain_label  # Store domain label based on MultiReID assignment
+                img_path=img_p, 
+                aid=aid, 
+                camid=camid, 
+                viewid=-1,
+                domain_label=self.domain_label
             )
             img_datums.append(img_datum)
 
         return img_datums
-

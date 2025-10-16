@@ -20,7 +20,8 @@ class SeaStar(DatasetBase):
             - identities: 81 (train) + 14 (gallery) + 14 (query)
     """
     def __init__(self, cfg, domain_label, verbose = True):
-        self._dataset_dir = "SeaStar"
+        # self._dataset_dir = "SeaStar"
+        self._dataset_dir = "SeaStarReID2023"
         root = cfg.DATASET.ROOT
         self._dataset_path = os.path.join(root, self._dataset_dir)
         print("dataset path: ", self._dataset_path)

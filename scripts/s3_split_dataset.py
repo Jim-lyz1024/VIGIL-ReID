@@ -239,7 +239,7 @@ if __name__ == "__main__":
     # Configuration
     ############# Change here to specify new dataset #############
     # base_dir = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\CatIndividualImages"
-    base_dir = r"F:\archive\data\Chicks4FreeID"
+    base_dir = r"F:\archive\data\ZindiTurtleRecall"
     ##########################
     ids_directory = os.path.join(base_dir, "IDs")
     train_directory = os.path.join(base_dir, "train")

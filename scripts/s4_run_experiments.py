@@ -36,9 +36,9 @@ ADDITIONAL_ARGS = []  # Add any additional command line arguments here
 # CONFIG_FILE = "config/siglipzeroshot.yaml"
 
 # CatIndividualImages with SIGLIPZeroShot 
-DATASET = "Chicks4FreeID"
-SOURCE_DOMAINS = ["Chicks4FreeID"]
-TARGET_DOMAINS = ["Chicks4FreeID"]
+DATASET = "ZindiTurtleRecall"
+SOURCE_DOMAINS = ["ZindiTurtleRecall"]
+TARGET_DOMAINS = ["ZindiTurtleRecall"]
 MODEL = "CLIPZeroShot"
 CONFIG_FILE = "config/clipzeroshot.yaml"
 

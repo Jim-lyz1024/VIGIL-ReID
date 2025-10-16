@@ -141,7 +141,7 @@ if __name__ == "__main__":
     # ==========================================
     # Specify target species (can be a list or a single string)
     # target_species = ['AAUZebraFish']  # Process only AAUZebraFish
-    target_species = ['Chicks4FreeID']  # Process only Chicks4FreeID
+    target_species = ['ZindiTurtleRecall']  # Process only ZindiTurtleRecall
     # target_species = ['AAUZebraFish', 'AerialCattle2017']  # Process multiple species
     # target_species = None  # Process all species
     

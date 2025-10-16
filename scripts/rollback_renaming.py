@@ -56,7 +56,8 @@ def rollback_renaming(base_dir):
 
 
 if __name__ == "__main__":
-    base_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\AmvrakikosTurtles\IDs"
+    # base_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\AmvrakikosTurtles\IDs"
+    base_directory = r"F:\archive\data\Giraffes\IDs"
     
     print("=" * 80)
     print("Turtle Image Rollback Script")

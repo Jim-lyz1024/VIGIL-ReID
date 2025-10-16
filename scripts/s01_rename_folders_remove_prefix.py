@@ -123,8 +123,8 @@ if __name__ == "__main__":
     # ==========================================
     # Single Directory Mode
     # ==========================================
-    directory_path = r"F:\archive\data\Chicks4FreeID\IDs"
-    prefix_to_remove = "Chicks4FreeID"  # Remove this prefix before underscore
+    directory_path = r"F:\archive\organized_by_identity"
+    prefix_to_remove = "SeaTurtleID2022"  # Remove this prefix before underscore
 
     # Step 1: Preview changes (dry_run=True)
     print("STEP 1: PREVIEW MODE")
