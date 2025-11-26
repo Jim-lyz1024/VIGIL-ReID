@@ -41,4 +41,9 @@ PROMPT_TEMPLATES = {
     "WhaleSharkID": "a picture of a {}.",
     "ZakynthosTurtles": "a picture of a {}.",
     "ZindiTurtleRecall": "a picture of a {}.",
+    "CzechLynx": "a picture of a {}.",
+    "CoBRA": "a picture of a {}.",
+    "HumpbackWhaleID": "a picture of a {}.",
+    "MacaqueFaces": "a picture of a {}.",
+    "WildRaptorID": "a picture of a {}.",
 }

@@ -109,7 +109,7 @@ if __name__ == "__main__":
     # Set base directory
     ############# Change here to specify new dataset #############
     # base_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\BirdIndividualID\IDs"
-    base_directory = r"F:\archive\organized_by_identity"
+    base_directory = r"F:\archive\data\WildRaptorID\IDs"
     #############
     
     print("=" * 80)

@@ -176,7 +176,7 @@ if __name__ == "__main__":
     # CatIndividualImages Renaming
     # ==========================================
     # directory_path = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\CatIndividualImages\IDs"
-    directory_path = r"F:\archive\organized_by_identity"
+    directory_path = r"F:\archive\data\CzechLynx\IDs"
     
     print("="*60)
     print("GiraffeZebraID Folder Renaming")
@@ -191,7 +191,7 @@ if __name__ == "__main__":
     print("STEP 1: PREVIEW MODE")
     print("="*60)
     rename_folders_with_offset(directory_path, offset=-1, dry_run=True)
-    # rename_folders_with_offset(directory_path, offset=-1, dry_run=False)
+    rename_folders_with_offset(directory_path, offset=0, dry_run=False)
     # rename_folders_with_offset(directory_path, offset=-1, dry_run=False)
     
     # Step 2: Uncomment below to perform actual renaming

@@ -41,3 +41,8 @@ from .stripe_spotter import StripeSpotter # noqa
 from .whaleshark import WhaleSharkID # noqa
 from .zakynthos_turtles import ZakynthosTurtles # noqa
 from .zindi_turtle import ZindiTurtleRecall # noqa
+from .czechlynx import CzechLynx # noqa
+from .cobra import CoBRA # noqa
+from .humpback_whale import HumpbackWhaleID # noqa
+from .macaquefaces import MacaqueFaces # noqa
+from .wildraptor import WildRaptorID # noqa

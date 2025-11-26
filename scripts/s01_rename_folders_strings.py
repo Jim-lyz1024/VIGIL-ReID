@@ -195,7 +195,8 @@ if __name__ == "__main__":
     # ==========================================
     # Example:  ReunionTurtles folders
     # ==========================================
-    directory_path = r"F:\archive\organized_by_identity"
+    # directory_path = r"F:\archive\organized_by_identity"
+    directory_path = r"F:\archive\data\WildRaptorID\IDs"
     
     # Step 0: Analyze folder patterns (recommended first step)
     print("STEP 0: ANALYZE FOLDER PATTERNS")
@@ -206,17 +207,17 @@ if __name__ == "__main__":
     print("\n\nSTEP 1: PREVIEW MODE")
     rename_folders_with_mapping(
         directory_path, 
-        prefix_to_remove="StripeSpotter_",  # Change this to match your prefix
+        prefix_to_remove="w_",  # Change this to match your prefix
         dry_run=True
     )
     
     # Step 2: Save mapping to file (recommended before actual renaming)
-    save_mapping_to_file(directory_path, prefix_to_remove="StripeSpotter_")
+    save_mapping_to_file(directory_path, prefix_to_remove="w_")
     
     # Step 3: Uncomment below to perform actual renaming
     print("\n\nSTEP 3: ACTUAL RENAMING")
     rename_folders_with_mapping(
         directory_path, 
-        prefix_to_remove="StripeSpotter_",
+        prefix_to_remove="w_",
         dry_run=False
     )

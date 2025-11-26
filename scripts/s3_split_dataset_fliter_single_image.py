@@ -337,7 +337,7 @@ def verify_split(train_dir, query_dir, gallery_dir):
 if __name__ == "__main__":
     # Configuration
     ############# Change here to specify new dataset #############
-    base_dir = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\BelugaID"
+    base_dir = r"F:\archive\data\HumpbackWhaleID"
     ##########################
     ids_directory = os.path.join(base_dir, "IDs")
     train_directory = os.path.join(base_dir, "train")
@@ -370,4 +370,4 @@ if __name__ == "__main__":
         )
         
         # Verify the split
-    verify_split(train_directory, query_directory, gallery_directory)
+    # verify_split(train_directory, query_directory, gallery_directory)

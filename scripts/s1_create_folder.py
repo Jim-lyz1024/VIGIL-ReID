@@ -2,9 +2,9 @@ import os
 
 # Define the root directory and the range of folder names
 # root_directory = r"E:\LYZ\AucklandCourse\2024Thesis\Thesis\VIGIL-ReID\data\CatIndividualImages\IDs"
-root_directory = r"F:\archive\data\CowDataset\IDs"
+root_directory = r"F:\archive\data\CoBRA\IDs"
 start_number = 0
-end_number = 12
+end_number = 47
 
 # Create folders
 for i in range(start_number, end_number + 1):
